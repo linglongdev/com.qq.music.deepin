@@ -19,10 +19,12 @@ sources:
     url: https://winedata-dev.deepin.com/apps/com.qq.music.deepin/1efbee7/signed_com.qq.music.deepin_20.22deepin5_amd64.deb
     digest: c3eb322ab379d935d69300556cf545d3a7336e0646c0733fbabdb18c1d6f1e07
 
+
 build: |
   set -x
   SOURCES="linglong/sources"
   dpkg-deb -x $SOURCES/signed_com.qq.music.deepin_20.22deepin5_amd64.deb $SOURCES/com.qq.music.deepin
+
   # run.sh替换
   FILE_PATH="$SOURCES/com.qq.music.deepin/opt/apps/com.qq.music.deepin/files/run.sh" 
   sed -i -e 's|/opt/deepin-wine8-stable|/runtime/deepin-wine8-stable|g' \
