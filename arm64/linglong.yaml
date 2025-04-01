@@ -1,0 +1,41 @@
+version: "1"
+
+package:
+  id: com.qq.music.deepin
+  name: com.qq.music.deepin
+  version: 1.0.0.3
+  kind: app
+  description: |
+    com.qq.music.deepin_20.22deepin6_arm64.deb
+
+base: org.deepin.base.wine/23.2.0/arm64
+runtime: org.deepin.runtime.wine/23.2.1/arm64
+
+command:
+  - /opt/apps/com.qq.music.deepin/files/run.sh
+
+sources:
+  - kind: file
+    url: https://winedata-dev.deepin.com/apps/com.qq.music.deepin/4a0dced/com.qq.music.deepin_20.22deepin6_arm64.deb
+    digest: 91d9abc6f1d23b43d6698f179ae01e0e0820af4b8c5a1eb800acef305c5c43f5
+
+
+build: |
+  set -x
+  SOURCES="linglong/sources"
+  dpkg-deb -x $SOURCES/com.qq.music.deepin_20.22deepin6_arm64.deb $SOURCES/com.qq.music.deepin
+
+  # run.sh替换
+  FILE_PATH="$SOURCES/com.qq.music.deepin/opt/apps/com.qq.music.deepin/files/run.sh" 
+  sed -i -e 's|/opt/deepin-wine8-stable|/runtime/deepin-wine8-stable|g' \
+         -e 's|/opt/deepin-wine6-stable|/runtime/deepin-wine6-stable|g' \
+         -e 's|/opt/deepinwine|/runtime/deepinwine|g' \
+         -e 's|/opt/deepin-box86|/runtime/deepin-box86|g' \
+         -e '/BOTTLENAME=/s/$/&.linglong/' "$FILE_PATH"
+   
+  install -d $PREFIX/share
+  install -d $PREFIX/bin
+  # move files
+  cp -r $SOURCES/com.qq.music.deepin/opt/apps/com.qq.music.deepin/entries/* $PREFIX/share
+  cp -r $SOURCES/com.qq.music.deepin/opt/apps/com.qq.music.deepin/files/* $PREFIX
+  
